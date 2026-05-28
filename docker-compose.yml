@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+
+  # ── FastAPI backend ──────────────────────────────────────
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: betteresume-server
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./server:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── React frontend ───────────────────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: betteresume-client
+    ports:
+      - "5173:80"
+    depends_on:
+      - server
+    restart: unless-stopped
