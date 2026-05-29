@@ -18,6 +18,7 @@ class UserOut(BaseModel):
     id: str
     name: str
     email: str
+    is_verified: bool = False
     created_at: datetime
 
 
