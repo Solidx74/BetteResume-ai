@@ -1,5 +1,4 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
 from datetime import datetime
 
 
@@ -18,7 +17,7 @@ class UserOut(BaseModel):
     id: str
     name: str
     email: str
-    is_verified: bool = False
+    is_verified: bool = True
     created_at: datetime
 
 

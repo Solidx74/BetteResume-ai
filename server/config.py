@@ -1,4 +1,5 @@
 from pathlib import Path
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings
 
 # Absolute path to .env — works regardless of where uvicorn is launched from on Windows/Linux
@@ -6,8 +7,11 @@ ENV_FILE = Path(__file__).parent / ".env"
 
 
 class Settings(BaseSettings):
-    # Database
-    MONGODB_URI: str = "mongodb://localhost:27017"
+    # Database (MONGO_URI accepted as alias for Render/other hosts)
+    MONGODB_URI: str = Field(
+        default="mongodb://localhost:27017",
+        validation_alias=AliasChoices("MONGODB_URI", "MONGO_URI"),
+    )
     DB_NAME: str = "betteresume"
 
     # Auth
@@ -17,10 +21,6 @@ class Settings(BaseSettings):
 
     # AI
     GROQ_API_KEY: str = ""
-
-    # Email
-    RESEND_API_KEY: str = ""
-    FROM_EMAIL: str = "onboarding@resend.dev"
 
     # Upload
     MAX_FILE_SIZE_MB: int = 10
