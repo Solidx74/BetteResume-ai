@@ -7,12 +7,23 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [clientError, setClientError] = useState('')
   const { register, isLoading, error, clearError } = useAuthStore()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); clearError()
-    const result = await register(name, email, password)
+    e.preventDefault(); clearError(); setClientError('')
+    const trimmedName = name.trim()
+    const trimmedEmail = email.trim()
+    if (!trimmedName || !trimmedEmail || !password) {
+      setClientError('Name, email, and password are required')
+      return
+    }
+    if (password.length < 8) {
+      setClientError('Password must be at least 8 characters')
+      return
+    }
+    const result = await register(trimmedName, trimmedEmail, password)
     if (result.success) navigate('/dashboard')
   }
 
@@ -52,9 +63,9 @@ export default function Register() {
 
         {/* Input Card Container */}
         <div className="card dark:bg-slate-900 dark:border-slate-800 shadow-card-md">
-          {error && (
+          {(clientError || error) && (
             <div className="flex items-center gap-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg px-4 py-3 mb-5 text-red-700 dark:text-red-400 text-sm">
-              <AlertCircle size={15} className="shrink-0 text-red-500 dark:text-red-400" />{error}
+              <AlertCircle size={15} className="shrink-0 text-red-500 dark:text-red-400" />{clientError || error}
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-4">

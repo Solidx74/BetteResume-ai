@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     # AI
     GROQ_API_KEY: str = ""
 
+    # Email
+    RESEND_API_KEY: str = ""
+    FROM_EMAIL: str = "onboarding@resend.dev"
+
     # Upload
     MAX_FILE_SIZE_MB: int = 10
 
@@ -39,7 +43,7 @@ settings = Settings()
 if "localhost" in settings.MONGODB_URI and "27017" in settings.MONGODB_URI:
     import warnings
     warnings.warn(
-        f"\n⚠️  MONGODB_URI is still localhost:27017.\n"
+        f"\nWARNING: MONGODB_URI is still localhost:27017.\n"
         f"   .env expected at: {ENV_FILE}\n"
         f"   Make sure .env exists inside the server/ folder and contains MONGODB_URI.",
         stacklevel=2,

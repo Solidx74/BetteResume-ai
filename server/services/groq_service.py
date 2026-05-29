@@ -1,4 +1,5 @@
 import json
+import re
 from groq import AsyncGroq
 from config import settings
 
@@ -23,6 +24,29 @@ ROLE_SKILLS = {
     "Mobile App Developer": ["Swift", "Kotlin", "React Native", "Flutter", "REST APIs", "SQLite", "Firebase", "App Store", "Push Notifications", "UI Design"],
     "Database Administrator": ["PostgreSQL", "MySQL", "Oracle", "SQL Server", "Performance Tuning", "Backup & Recovery", "Replication", "Indexing", "MongoDB", "Redis"],
 }
+
+
+def extract_json_object(raw: str) -> dict:
+    """Parse a JSON object from an LLM response with or without markdown fences."""
+    text = raw.strip()
+    fenced = re.search(r"```(?:json)?\s*(.*?)```", text, flags=re.IGNORECASE | re.DOTALL)
+    if fenced:
+        text = fenced.group(1).strip()
+    else:
+        start = text.find("{")
+        end = text.rfind("}")
+        if start == -1 or end == -1 or end < start:
+            raise ValueError("AI response did not contain a JSON object")
+        text = text[start:end + 1]
+
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"AI response contained invalid JSON: {exc.msg}") from exc
+
+    if not isinstance(parsed, dict):
+        raise ValueError("AI response JSON must be an object")
+    return parsed
 
 
 async def extract_resume_data(text: str) -> dict:
@@ -54,12 +78,7 @@ Return ONLY a valid JSON object with this exact structure (no markdown, no expla
         temperature=0.1,
     )
     raw = response.choices[0].message.content.strip()
-    # Strip markdown fences if present
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    return json.loads(raw.strip())
+    return extract_json_object(raw)
 
 
 async def analyze_skill_gap(resume_data: dict, target_role: str) -> dict:
@@ -100,11 +119,7 @@ For recommendations, suggest 4-5 specific, real learning resources (Coursera, Ud
         temperature=0.2,
     )
     raw = response.choices[0].message.content.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    return json.loads(raw.strip())
+    return extract_json_object(raw)
 
 
 async def generate_latex(resume_data: dict, target_role: str) -> str:

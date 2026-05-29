@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime
 from bson import ObjectId
+from bson.errors import InvalidId
 
 from db import get_db
 from middleware.auth import get_current_user
@@ -10,6 +11,13 @@ from services.groq_service import extract_resume_data, analyze_skill_gap
 router = APIRouter(prefix="/analyze", tags=["analyze"])
 
 
+def parse_object_id(value: str, field_name: str = "id") -> ObjectId:
+    try:
+        return ObjectId(value)
+    except (InvalidId, TypeError):
+        raise HTTPException(status_code=400, detail=f"Invalid {field_name}")
+
+
 @router.post("/resume")
 async def analyze_resume(
     data: AnalyzeRequest,
@@ -17,9 +25,10 @@ async def analyze_resume(
 ):
     db = get_db()
     user_id = str(current_user["_id"])
+    resume_oid = parse_object_id(data.resume_id, "resume ID")
 
     # Fetch resume
-    resume = await db.resumes.find_one({"_id": ObjectId(data.resume_id)})
+    resume = await db.resumes.find_one({"_id": resume_oid})
     if not resume:
         raise HTTPException(status_code=404, detail="Resume not found")
     if resume["user_id"] != user_id:
@@ -44,7 +53,7 @@ async def analyze_resume(
     # Save to DB
     analysis_doc = {
         "user_id": user_id,
-        "resume_id": ObjectId(data.resume_id),
+        "resume_id": resume_oid,
         "filename": resume["filename"],
         "target_role": data.target_role,
         "resume_data": resume_data,
@@ -69,10 +78,7 @@ async def analyze_resume(
 @router.get("/{analysis_id}")
 async def get_analysis(analysis_id: str, current_user=Depends(get_current_user)):
     db = get_db()
-    try:
-        oid = ObjectId(analysis_id)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid analysis ID")
+    oid = parse_object_id(analysis_id, "analysis ID")
 
     analysis = await db.analyses.find_one({"_id": oid})
     if not analysis:

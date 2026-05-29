@@ -9,14 +9,16 @@ db = None
 async def connect_db():
     global client, db
 
-    client = AsyncIOMotorClient(
-        settings.MONGODB_URI,
-        serverSelectionTimeoutMS=10_000,  # fail fast with clear error
-        connectTimeoutMS=10_000,
-        socketTimeoutMS=30_000,
-        tls=True,                         # Atlas always requires TLS
-        tlsAllowInvalidCertificates=False,
-    )
+    client_options = {
+        "serverSelectionTimeoutMS": 10_000,
+        "connectTimeoutMS": 10_000,
+        "socketTimeoutMS": 30_000,
+    }
+    if settings.MONGODB_URI.startswith("mongodb+srv://"):
+        client_options["tls"] = True
+        client_options["tlsAllowInvalidCertificates"] = False
+
+    client = AsyncIOMotorClient(settings.MONGODB_URI, **client_options)
 
     db = client[settings.DB_NAME]
 
@@ -35,7 +37,7 @@ async def connect_db():
         IndexModel([("user_id", ASCENDING)]),
     ])
 
-    print(f"✓ MongoDB connected → {settings.DB_NAME}")
+    print(f"MongoDB connected: {settings.DB_NAME}")
 
 
 async def close_db():

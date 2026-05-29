@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 from bson import ObjectId
+from bson.errors import InvalidId
 from config import settings
 from db import get_db
 
@@ -24,8 +25,13 @@ async def get_current_user(
     except JWTError:
         raise credentials_exception
 
+    try:
+        user_oid = ObjectId(user_id)
+    except (InvalidId, TypeError):
+        raise credentials_exception
+
     db = get_db()
-    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    user = await db.users.find_one({"_id": user_oid})
     if not user:
         raise credentials_exception
     return user

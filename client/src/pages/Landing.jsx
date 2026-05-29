@@ -5,6 +5,7 @@ import {
   Upload, BarChart3, Download, Shield
 } from 'lucide-react'
 import Footer from '../components/Footer'
+import SuccessStory from '../components/SuccessStory'
 import ThemeToggle from '../components/ThemeToggle'
 import profileImg from '../assets/profile.png'
 
@@ -138,6 +139,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <SuccessStory />
 
       {/* Features Section */}
       <section id="features" className="py-24 px-6 bg-surface dark:bg-slate-900 transition-colors duration-200">

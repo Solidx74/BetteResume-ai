@@ -6,12 +6,18 @@ import useAuthStore from '../store/authStore'
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [clientError, setClientError] = useState('')
   const { login, isLoading, error, clearError } = useAuthStore()
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); clearError()
-    const result = await login(email, password)
+    e.preventDefault(); clearError(); setClientError('')
+    const trimmedEmail = email.trim()
+    if (!trimmedEmail || !password) {
+      setClientError('Email and password are required')
+      return
+    }
+    const result = await login(trimmedEmail, password)
     if (result.success) navigate('/dashboard')
   }
 
@@ -36,9 +42,9 @@ export default function Login() {
 
         {/* Auth Box Container */}
         <div className="card dark:bg-slate-900 dark:border-slate-800 shadow-card-md">
-          {error && (
+          {(clientError || error) && (
             <div className="flex items-center gap-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg px-4 py-3 mb-5 text-red-700 dark:text-red-400 text-sm">
-              <AlertCircle size={15} className="shrink-0 text-red-500 dark:text-red-400" />{error}
+              <AlertCircle size={15} className="shrink-0 text-red-500 dark:text-red-400" />{clientError || error}
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-4">

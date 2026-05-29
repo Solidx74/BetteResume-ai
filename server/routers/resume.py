@@ -1,16 +1,24 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from datetime import datetime
 from bson import ObjectId
-from typing import List
+from bson.errors import InvalidId
 
 from db import get_db
 from middleware.auth import get_current_user
 from services.file_parser import parse_resume_file
 from config import settings
+from models.resume import LatexRequest
 
 router = APIRouter(prefix="/resume", tags=["resume"])
 
 MAX_BYTES = settings.MAX_FILE_SIZE_MB * 1024 * 1024
+
+
+def parse_object_id(value: str, field_name: str = "id") -> ObjectId:
+    try:
+        return ObjectId(value)
+    except (InvalidId, TypeError):
+        raise HTTPException(status_code=400, detail=f"Invalid {field_name}")
 
 
 @router.post("/upload")
@@ -91,23 +99,22 @@ async def get_history(current_user=Depends(get_current_user)):
 
 @router.post("/generate-latex")
 async def generate_latex_endpoint(
-    data: dict,
+    data: LatexRequest,
     current_user=Depends(get_current_user),
 ):
     from services.groq_service import generate_latex
 
-    analysis_id = data.get("analysis_id")
-    if not analysis_id:
-        raise HTTPException(status_code=400, detail="analysis_id required")
+    analysis_oid = parse_object_id(data.analysis_id, "analysis ID")
 
     db = get_db()
-    analysis = await db.analyses.find_one({"_id": ObjectId(analysis_id)})
+    analysis = await db.analyses.find_one({"_id": analysis_oid})
     if not analysis:
         raise HTTPException(status_code=404, detail="Analysis not found")
     if analysis["user_id"] != str(current_user["_id"]):
         raise HTTPException(status_code=403, detail="Not authorized")
 
-    resume = await db.resumes.find_one({"_id": ObjectId(str(analysis["resume_id"]))})
+    resume_oid = parse_object_id(str(analysis["resume_id"]), "resume ID")
+    resume = await db.resumes.find_one({"_id": resume_oid})
     if not resume:
         raise HTTPException(status_code=404, detail="Resume not found")
 
@@ -121,17 +128,18 @@ async def generate_latex_endpoint(
 
     # Save latex to analysis document
     await db.analyses.update_one(
-        {"_id": ObjectId(analysis_id)},
+        {"_id": analysis_oid},
         {"$set": {"latex": latex, "latex_generated_at": datetime.utcnow()}},
     )
 
-    return {"latex": latex, "analysis_id": analysis_id}
+    return {"latex": latex, "analysis_id": data.analysis_id}
 
 
 @router.get("/latex/{analysis_id}")
 async def get_latex(analysis_id: str, current_user=Depends(get_current_user)):
     db = get_db()
-    analysis = await db.analyses.find_one({"_id": ObjectId(analysis_id)})
+    analysis_oid = parse_object_id(analysis_id, "analysis ID")
+    analysis = await db.analyses.find_one({"_id": analysis_oid})
     if not analysis:
         raise HTTPException(status_code=404, detail="Not found")
     if analysis["user_id"] != str(current_user["_id"]):
