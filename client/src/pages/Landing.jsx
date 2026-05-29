@@ -71,7 +71,6 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative pt-36 pb-28 px-6 overflow-hidden bg-hero-gradient dark:bg-none dark:bg-slate-950 transition-colors duration-200">
-        {/* Subtle grid opacity adjustment for dark mode */}
         <div className="absolute inset-0 bg-grid-subtle dark:opacity-40 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 tag-indigo dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-800 mb-8 animate-fade-up opacity-0" style={{ animationFillMode: 'forwards' }}>
@@ -184,10 +183,15 @@ export default function Landing() {
           </div>
           <div className="space-y-4">
             {HOW.map((step, i) => (
-              <div key={step.n} className="card dark:bg-slate-950 dark:border-slate-800 flex gap-5 items-center hover:border-indigo-200 dark:hover:border-indigo-900/60 hover:shadow-card-md transition-all duration-200 group">
-                <div className="w-10 h-10 bg-surface-2 dark:bg-slate-900 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/40 group-hover:border group-hover:border-indigo-200 dark:group-hover:border-indigo-900/60 transition-all duration-200">
-                  <step.icon size={17} className="text-muted dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200" />
+              <div
+                key={step.n}
+                className="w-full flex gap-5 items-center p-5 rounded-2xl bg-white dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800/80 shadow-sm dark:shadow-none hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-slate-50/50 dark:hover:bg-indigo-950/10 hover:shadow-card-md transition-all duration-300 ease-in-out group"
+              >
+                {/* Fixed Icon Container: base border ensures no height shifting/flicker */}
+                <div className="w-10 h-10 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800/40 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/50 group-hover:border-indigo-200 dark:group-hover:border-indigo-900/50 transition-all duration-300">
+                  <step.icon size={17} className="text-muted dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300" />
                 </div>
+
                 <div className="flex-1 text-left">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-[10px] font-mono text-subtle dark:text-slate-500">{step.n}</span>
@@ -195,7 +199,9 @@ export default function Landing() {
                   </div>
                   <p className="text-muted dark:text-slate-400 text-sm">{step.desc}</p>
                 </div>
-                <CheckCircle2 size={15} className="text-border dark:text-slate-700 shrink-0 group-hover:text-emerald-400 dark:group-hover:text-emerald-500 transition-colors duration-200" />
+
+                {/* Action State End Check Indicator */}
+                <CheckCircle2 size={15} className="text-slate-200 dark:text-slate-800 shrink-0 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors duration-300" />
               </div>
             ))}
           </div>
@@ -212,7 +218,7 @@ export default function Landing() {
             { icon: CheckCircle2, text: '100% free to use' },
           ].map(t => (
             <div key={t.text} className="flex items-center gap-2 text-white/90 text-sm">
-              <t.icon size={15} className="text-emerald-300 dark:text-emerald-400" /> {t.text}
+              <img src="" alt="" /><t.icon size={15} className="text-emerald-300 dark:text-emerald-400" /> {t.text}
             </div>
           ))}
         </div>
