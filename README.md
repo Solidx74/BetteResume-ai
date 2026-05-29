@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/BetteResume_AI-4F46E5?style=for-the-badge&logo=files&logoColor=white" alt="BetteResume AI"/>
 
-# BetteResume AI 🚀
+# BetteResume AI 
 
 ### Crush the ATS "Black Hole" using AI Agents
 
