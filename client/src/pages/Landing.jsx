@@ -104,14 +104,14 @@ export default function Landing() {
 
           {/* Mock UI Card */}
           <div className="max-w-3xl mx-auto mt-20 animate-fade-up opacity-0 animate-delay-400" style={{ animationFillMode: 'forwards' }}>
-            <div className="card dark:bg-slate-900 dark:border-slate-800 shadow-card-lg overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 border border-border-light dark:border-slate-800 rounded-xl shadow-card-lg p-6 overflow-hidden text-ink dark:text-white transition-colors duration-200">
               <div className="flex items-center gap-2 mb-5 pb-4 border-b border-border-light dark:border-slate-800">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                 <span className="text-subtle dark:text-slate-500 text-xs font-mono ml-2">betteresume.app/analysis</span>
               </div>
-              <div className="flex gap-6 items-center">
+              <div className="flex flex-col sm:flex-row gap-6 items-center">
                 <div className="relative w-24 h-24 shrink-0">
                   <svg width="96" height="96" viewBox="0 0 96 96" className="-rotate-90">
                     <circle cx="48" cy="48" r="38" fill="none" stroke="#D1FAE5" className="dark:stroke-emerald-950" strokeWidth="8" />
@@ -123,14 +123,14 @@ export default function Landing() {
                     <span className="text-subtle dark:text-slate-500 text-[10px]">match</span>
                   </div>
                 </div>
-                <div className="flex-1 text-left">
+                <div className="flex-1 w-full text-left">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="tag-indigo dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800/80">Full Stack Developer</span>
-                    <span className="tag dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">react_resume.pdf</span>
+                    <span className="tag-indigo text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800/80">Full Stack Developer</span>
+                    <span className="tag text-ink-3 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">react_resume.pdf</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 mb-3">
-                    {['React', 'TypeScript', 'Node.js', 'PostgreSQL'].map(s => <span key={s} className="tag-emerald dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800/60 text-[11px]">{s}</span>)}
-                    {['Docker', 'Kubernetes', 'AWS'].map(s => <span key={s} className="tag-red dark:bg-red-950/50 dark:text-red-300 dark:border-red-800/60 text-[11px]">{s}</span>)}
+                    {['React', 'TypeScript', 'Node.js', 'PostgreSQL'].map(s => <span key={s} className="tag-emerald text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800/60 text-[11px]">{s}</span>)}
+                    {['Docker', 'Kubernetes', 'AWS'].map(s => <span key={s} className="tag-red text-red-700 dark:bg-red-950/50 dark:text-red-300 dark:border-red-800/60 text-[11px]">{s}</span>)}
                   </div>
                   <div className="progress-bar dark:bg-slate-800"><div className="progress-fill" style={{ width: '74%' }} /></div>
                 </div>
