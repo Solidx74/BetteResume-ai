@@ -263,7 +263,7 @@ Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for full terms
 <img src="https://github.com/user-attachments/assets/b736a153-ec9f-4a2a-9021-cf7d045f6393" width="160" style="border-radius:50%" alt="Md. Kareeb Sadab"/>
 
 **Md. Kareeb Sadab**  
-Computer Science & Engineering — Chittagong University of Engineering and Technology (CUET)
+Computer Science & Engineering - Chittagong University of Engineering and Technology (CUET)
 
 [![GitHub](https://img.shields.io/badge/GitHub-Solidx74-181717?style=flat-square&logo=github)](https://github.com/Solidx74)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Kareeb_Sadab-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/karib-sadab-43666a407/)
